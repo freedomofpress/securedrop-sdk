@@ -14,3 +14,5 @@ sphinx = "*"
 
 [packages]
 requests = "*"
+request = {extras = ["socks"]}
+pysocks = "*"

@@ -172,7 +172,7 @@ class API:
     :returns: An object of API class.
     """
 
-    def __init__(self, address, username, passphrase, totp) -> None:
+    def __init__(self, address, username, passphrase, totp, useproxy=False) -> None:
         """
         Primary API class, this is the only thing which will make network call.
         """
@@ -183,6 +183,12 @@ class API:
         self.totp = totp  # type: str
         self.token = {"token": "", "expiration": ""}
         self.auth_header = {"Authorization": ""}  # type: Dict
+        self.proxies = {
+            "http": "socks5h://127.0.0.1:9050",
+            "https": "socks5h://127.0.0.1:9050",
+        }
+        if not useproxy:
+            self.proxies = None
 
     def authenticate(self) -> bool:
         """
@@ -196,7 +202,11 @@ class API:
             "one_time_code": self.totp,
         }
 
-        token = requests.post(self.server + "api/v1/token", data=json.dumps(user_data))
+        token = requests.post(
+            self.server + "api/v1/token",
+            data=json.dumps(user_data),
+            proxies=self.proxies,
+        )
         try:
             token_data = token.json()
         except json.decoder.JSONDecodeError:
@@ -224,7 +234,7 @@ class API:
         url = self.server + "api/v1/sources"
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
             data = res.json()
         except json.decoder.JSONDecodeError:
             raise BaseError("Error in parsing JSON")
@@ -251,7 +261,7 @@ class API:
         url = self.server + "api/v1/sources/{}".format(source.uuid)
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing source {}".format(source.uuid))
@@ -287,7 +297,7 @@ class API:
         url = self.server + "api/v1/sources/{}".format(source.uuid)
 
         try:
-            res = requests.delete(url, headers=self.auth_header)
+            res = requests.delete(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing source {}".format(source.uuid))
@@ -327,7 +337,7 @@ class API:
         url = self.server.rstrip("/") + source.add_star_url
 
         try:
-            res = requests.post(url, headers=self.auth_header)
+            res = requests.post(url, headers=self.auth_header, proxies=self.proxies)
             data = res.json()
         except json.decoder.JSONDecodeError:
             raise BaseError("Error in parsing JSON")
@@ -346,7 +356,7 @@ class API:
         url = self.server.rstrip("/") + source.remove_star_url
 
         try:
-            res = requests.delete(url, headers=self.auth_header)
+            res = requests.delete(url, headers=self.auth_header, proxies=self.proxies)
             data = res.json()
         except json.decoder.JSONDecodeError:
             raise BaseError("Error in parsing JSON")
@@ -366,7 +376,7 @@ class API:
         url = self.server.rstrip("/") + source.submissions_url
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing submission {}".format(source.uuid))
@@ -400,7 +410,7 @@ class API:
         )
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing submission {}".format(submission.uuid))
@@ -435,7 +445,7 @@ class API:
         url = self.server.rstrip("/") + "/api/v1/submissions"
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
             data = res.json()
         except json.decoder.JSONDecodeError:
             raise BaseError("Error in parsing JSON")
@@ -468,7 +478,7 @@ class API:
         )
 
         try:
-            res = requests.delete(url, headers=self.auth_header)
+            res = requests.delete(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing submission {}".format(submission.uuid))
@@ -513,7 +523,9 @@ class API:
             raise BaseError("Please provide a vaild directory to save.")
 
         try:
-            res = requests.get(url, headers=self.auth_header, stream=True)
+            res = requests.get(
+                url, headers=self.auth_header, stream=True, proxies=self.proxies
+            )
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing submission {}".format(submission.uuid))
@@ -548,7 +560,7 @@ class API:
         url = self.server.rstrip("/") + "/api/v1/sources/{}/flag".format(source.uuid)
 
         try:
-            res = requests.post(url, headers=self.auth_header)
+            res = requests.post(url, headers=self.auth_header, proxies=self.proxies)
             data = res.json()
         except json.decoder.JSONDecodeError:
             raise BaseError("Error in parsing JSON")
@@ -573,7 +585,7 @@ class API:
         url = self.server.rstrip("/") + "/api/v1/user"
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
             data = res.json()
         except json.decoder.JSONDecodeError:
             raise BaseError("Error in parsing JSON")
@@ -623,7 +635,7 @@ class API:
         url = self.server + "api/v1/sources/{}/replies".format(source.uuid)
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing source {}".format(source.uuid))
@@ -655,7 +667,7 @@ class API:
         )
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing source {}".format(source.uuid))
@@ -680,7 +692,7 @@ class API:
         url = self.server + "api/v1/replies"
 
         try:
-            res = requests.get(url, headers=self.auth_header)
+            res = requests.get(url, headers=self.auth_header, proxies=self.proxies)
 
             data = res.json()
         except json.decoder.JSONDecodeError:
@@ -712,7 +724,9 @@ class API:
             raise BaseError("Please provide a valid directory to save.")
 
         try:
-            res = requests.get(url, headers=self.auth_header, stream=True)
+            res = requests.get(
+                url, headers=self.auth_header, stream=True, proxies=self.proxies
+            )
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing reply {}".format(reply.uuid))
@@ -753,7 +767,7 @@ class API:
         )
 
         try:
-            res = requests.delete(url, headers=self.auth_header)
+            res = requests.delete(url, headers=self.auth_header, proxies=self.proxies)
 
             if res.status_code == 404:
                 raise WrongUUIDError("Missing reply {}".format(reply.uuid))
