@@ -80,7 +80,7 @@ class Submission:
     This class represents a submission object in the server.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         self.download_url = ""  # type: str
         self.filename = ""  # type: str
         self.is_read = False  # type: bool
@@ -96,7 +96,6 @@ class Submission:
             return
 
         if ["download_url"] == list(kwargs.keys()):
-            # Means we are creating an object only for fetching from server.
             self.download_url = kwargs["download_url"]
             return
 

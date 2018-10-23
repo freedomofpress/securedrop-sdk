@@ -357,17 +357,6 @@ class API:
         s.source_uuid = source_uuid
         return self.get_submission(s)
 
-    def get_submission_from_url(self, url: str) -> Submission:
-        """
-        Returns the updated Submission object from the server.
-
-        :param uuid: UUID of the Submission object.
-        :param source_uuid: UUID of the source.
-        :returns: Updated submission object from the server.
-        """
-        s = Submission(download_url=url)
-        return self.get_submission(s)
-
     def get_all_submissions(self) -> List[Submission]:
         """
         Returns a list of Submission objects from the server.
@@ -454,9 +443,13 @@ class API:
 
         :returns: Tuple of sha256sum and path of the saved submission.
         """
-        path_query = "api/v1/sources/{}/submissions/{}/download".format(
-            submission.source_uuid, submission.uuid
-        )
+
+        if submission.download_url != "":
+            path_query = submission.download_url
+        else:
+            path_query = "api/v1/sources/{}/submissions/{}".format(
+                submission.source_uuid, submission.uuid
+            )
         method = "GET"
 
         if path:
@@ -495,6 +488,23 @@ class API:
             return "", filepath
         except Exception as err:
             raise BaseError(err)
+
+    def download_submission_from_url(
+            self, url: str, path: str = ""
+    ) -> Tuple[str, str]:
+        """
+        Returns a tuple of sha256sum and file path for a given Submission object. This method
+        also requires a directory path in where it will save the submission file.
+
+        :param submission: Submission object
+        :param path: Local directory path to save the submission
+
+        :returns: Tuple of sha256sum and path of the saved submission.
+        """
+        s = Submission(download_url=url)
+        shasum, filepath = self.download_submission(s, path)
+
+        return shasum, filepath
 
     def flag_source(self, source: Source) -> bool:
         """
