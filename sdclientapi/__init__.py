@@ -321,9 +321,12 @@ class API:
         :param submission: Submission object we want to update.
         :returns: Updated submission object from the server.
         """
-        path_query = "api/v1/sources/{}/submissions/{}".format(
-            submission.source_uuid, submission.uuid
-        )
+        if submission.download_url != "":
+            path_query = submission.download_url
+        else:
+            path_query = "api/v1/sources/{}/submissions/{}".format(
+                submission.source_uuid, submission.uuid
+            )
         method = "GET"
 
         try:
@@ -352,6 +355,17 @@ class API:
         """
         s = Submission(uuid=uuid)
         s.source_uuid = source_uuid
+        return self.get_submission(s)
+
+    def get_submission_from_url(self, url: str) -> Submission:
+        """
+        Returns the updated Submission object from the server.
+
+        :param uuid: UUID of the Submission object.
+        :param source_uuid: UUID of the source.
+        :returns: Updated submission object from the server.
+        """
+        s = Submission(download_url=url)
         return self.get_submission(s)
 
     def get_all_submissions(self) -> List[Submission]:

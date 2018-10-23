@@ -95,6 +95,11 @@ class Submission:
             self.uuid = kwargs["uuid"]
             return
 
+        if ["download_url"] == list(kwargs.keys()):
+            # Means we are creating an object only for fetching from server.
+            self.download_url = kwargs["download_url"]
+            return
+
         for key in [
             "download_url",
             "filename",
