@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="securedrop-sdk",
-    version="0.1.0",
+    version="0.0.3",
     author="Kushal Das",
     author_email="kushal@freedom.press",
     description="Python client API to access SecureDrop Journalist REST API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="GPLv3+",
-    install_requires=["requests",],
+    install_requires=["requests"],
     python_requires=">=3.5",
     url="https://github.com/freedomofpress/securedrop-sdk",
     packages=setuptools.find_packages(exclude=["docs", "tests"]),
