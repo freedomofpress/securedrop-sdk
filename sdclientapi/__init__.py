@@ -446,7 +446,7 @@ class API:
         :returns: Tuple of sha256sum and path of the saved submission.
         """
         path_query = "api/v1/sources/{}/submissions/{}/download".format(
-            submission.source_uuid, submission.uuid
+            submission.source.uuid, submission.uuid
         )
         method = "GET"
 
