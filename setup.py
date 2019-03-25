@@ -3,6 +3,9 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("requirements.txt") as f:
+    install_requires = f.read().split("\n")
+
 setuptools.setup(
     name="securedrop-sdk",
     version="0.0.6",
@@ -12,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="GPLv3+",
-    install_requires=["requests", "urllib3"],
+    install_requires=install_requires,
     python_requires=">=3.5",
     url="https://github.com/freedomofpress/securedrop-sdk",
     packages=setuptools.find_packages(exclude=["docs", "tests"]),

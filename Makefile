@@ -1,3 +1,4 @@
+SHELL=/bin/bash
 DEFAULT_GOAL: help
 OPEN=$(word 1, $(wildcard /usr/bin/xdg-open /usr/bin/open))
 
@@ -21,6 +22,13 @@ mypy: ## Run the mypy typechecker
 
 .PHONY: check
 check: lint mypy test ## Run all checks and tests
+
+.PHONY: check-dependencies
+check-dependencies: ## Check that the dependencies specified in Pipfile.lock are the same as setup.py
+	@pipenv --rm && \
+		pipenv sync && \
+		cmp -s <(pipenv run pip freeze) requirements.txt || \
+			{ diff <(pipenv run pip freeze) requirements.txt ; exit 1 ; }
 
 .PHONY: open-coverage-report
 open-coverage-report: ## Open the coverage report in your browser
