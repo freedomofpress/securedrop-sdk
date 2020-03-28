@@ -1,6 +1,7 @@
 import configparser
 import http
 import json
+import logging
 import os
 import requests
 from datetime import datetime
@@ -27,6 +28,9 @@ from .sdlocalobjects import (
 DEFAULT_PROXY_VM_NAME = "sd-proxy"
 DEFAULT_REQUEST_TIMEOUT = 20  # 20 seconds
 DEFAULT_DOWNLOAD_TIMEOUT = 60 * 60  # 60 minutes
+LOGLEVEL = os.environ.get('LOGLEVEL', 'info').upper()
+
+logger = logging.getLogger(__name__)
 
 
 class RequestTimeoutError(Exception):
@@ -34,8 +38,8 @@ class RequestTimeoutError(Exception):
     Error raised if a request times out.
     """
 
-    def __init__(self) -> None:
-        super().__init__("The request timed out.")
+    def __init__(self, msg) -> None:
+        super().__init__(msg)
 
 
 class ServerConnectionError(Exception):
@@ -62,15 +66,48 @@ def json_query(proxy_vm_name: str, data: str, timeout: Optional[int] = None) -> 
 
     try:
         stdout, _ = p.communicate(timeout=timeout)  # type: (bytes, bytes)
-    except TimeoutExpired:
+    except TimeoutExpired as e:
         try:
             p.terminate()
         except Exception:
             pass
-        raise RequestTimeoutError
+        raise RequestTimeoutError(e)
     else:
         output = stdout.decode("utf-8")
         return output.strip()
+
+
+def configure_logging() -> None:
+    log_file = os.path('securedrop-sdk.log')
+
+    # set logging format
+    log_fmt = ('%(asctime)s - %(name)s:%(lineno)d(%(funcName)s) %(levelname)s: %(message)s')
+    formatter = logging.Formatter(log_fmt)
+
+    # define log handlers such as for rotating log files
+    handler = TimedRotatingFileHandler(
+        log_file, when='midnight', backupCount=5, delay=False, encoding=ENCODING)
+    handler.setFormatter(formatter)
+
+    # For rsyslog handler
+    if platform.system() != "Linux":  # pragma: no cover
+        syslog_file = "/var/run/syslog"
+    else:
+        syslog_file = "/dev/log"
+
+    sysloghandler = SysLogHandler(address=syslog_file)
+    sysloghandler.setFormatter(formatter)
+
+    # set up primary log
+    log = logging.getLogger()
+    log.setLevel(LOGLEVEL)
+    log.addHandler(handler)
+
+    # add the secondard logger
+    log.addHandler(sysloghandler)
+
+    # override excepthook to capture a log of catastrophic failures.
+    sys.excepthook = excepthook
 
 
 class API:
@@ -127,6 +164,11 @@ class API:
         except Exception:
             pass  # We already have a default name
 
+        configure_logging()
+
+        # test that logging is working
+        logger.info('HELLO HELLO HELLO!')
+
     def _send_json_request(
         self,
         method: str,
@@ -161,8 +203,8 @@ class API:
 
         try:
             result = requests.request(method, url, **kwargs)
-        except (ConnectTimeout, ReadTimeout):
-            raise RequestTimeoutError
+        except (ConnectTimeout, ReadTimeout) as e:
+            raise RequestTimeoutError(e)
         except (TooManyRedirects, ConnectionError):
             raise ServerConnectionError
 
@@ -201,7 +243,7 @@ class API:
         data = json.loads(result["body"])
 
         if "error" in data and result["status"] == http.HTTPStatus.GATEWAY_TIMEOUT:
-            raise RequestTimeoutError
+            raise RequestTimeoutError(http.HTTPStatus.GATEWAY_TIMEOUT)
         elif "error" in data and result["status"] == http.HTTPStatus.BAD_GATEWAY:
             raise ServerConnectionError
         elif "error" in data and result["status"] == http.HTTPStatus.FORBIDDEN:
