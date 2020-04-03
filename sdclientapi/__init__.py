@@ -267,6 +267,7 @@ class API:
                 "Authorization": "Token " + self.token,
                 "Content-Type": "application/json",
                 "Accept": "application/json",
+                "Accept-Encoding": "gzip, deflate, identity",
             }
 
     def get_sources(self) -> List[Source]:
