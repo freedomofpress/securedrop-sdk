@@ -1,6 +1,6 @@
 # Python SDK for SecureDrop
 
-[![CircleCI](https://circleci.com/gh/freedomofpress/securedrop-sdk/tree/master.svg?style=svg)](https://circleci.com/gh/freedomofpress/securedrop-sdk/tree/master)
+[![CircleCI](https://circleci.com/gh/freedomofpress/securedrop-sdk/tree/main.svg?style=svg)](https://circleci.com/gh/freedomofpress/securedrop-sdk/tree/main)
 
 This SDK provides a convenient Python interface to the [SecureDrop Journalist Interface API](https://docs.securedrop.org/en/latest/development/journalist_api.html). The development of the SDK was primarily motivated by the creation of the [SecureDrop Workstation](https://github.com/freedomofpress/securedrop-workstation) based on Qubes OS.
 
