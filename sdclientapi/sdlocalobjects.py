@@ -1,5 +1,6 @@
-import pydantic
 import typing
+
+import pydantic
 
 if typing.TYPE_CHECKING:
     from typing import Dict  # noqa: F401
