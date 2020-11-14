@@ -1,4 +1,5 @@
 import typing
+import pydantic
 
 if typing.TYPE_CHECKING:
     from typing import Dict  # noqa: F401
@@ -184,24 +185,10 @@ class Source:
             setattr(self, key, kwargs[key])
 
 
-class User:
-    """
-    This class represents a user (journalist or admin) of the Journalist
-    Interface.
-    """
+class User(pydantic.BaseModel):
+    """A user (journalist or admin) of the Journalist interface."""
 
-    def __init__(self, **kwargs) -> None:  # type: ignore
-        self.first_name = ""  # type: str
-        self.last_name = ""  # type: str
-        self.username = ""  # type: str
-        self.uuid = ""  # type: str
-
-        for key in [
-            "first_name",
-            "last_name",
-            "username",
-            "uuid",
-        ]:
-            if key not in kwargs:
-                AttributeError("Missing key {}".format(key))
-            setattr(self, key, kwargs[key])
+    first_name: str
+    last_name: str
+    username: str
+    uuid: str
