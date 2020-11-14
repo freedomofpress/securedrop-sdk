@@ -1,15 +1,12 @@
-import typing
+from typing import Dict, Optional
 
 import pydantic
-
-if typing.TYPE_CHECKING:
-    from typing import Dict  # noqa: F401
 
 
 class BaseError(Exception):
     """For generic errors not covered by other exceptions"""
 
-    def __init__(self, message: typing.Optional[str] = None) -> None:
+    def __init__(self, message: Optional[str] = None) -> None:
         self.msg = message
 
     def __str__(self) -> str:
@@ -189,7 +186,7 @@ class Source:
 class User(pydantic.BaseModel):
     """A user (journalist or admin) of the Journalist interface."""
 
-    first_name: str
-    last_name: str
+    first_name: Optional[str]
+    last_name: Optional[str]
     username: str
     uuid: str
