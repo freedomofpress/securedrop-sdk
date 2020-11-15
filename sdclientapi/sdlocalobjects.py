@@ -1,4 +1,5 @@
 from typing import Dict, Optional
+from uuid import UUID
 
 import pydantic
 
@@ -186,7 +187,7 @@ class Source:
 class User(pydantic.BaseModel):
     """A user (journalist or admin) of the Journalist interface."""
 
+    uuid: UUID
+    username: str
     first_name: Optional[str]
     last_name: Optional[str]
-    username: str
-    uuid: str
