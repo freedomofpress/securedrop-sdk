@@ -22,7 +22,7 @@ class TestAPIProxy(TestShared):
     """
 
     @dastollervey_datasaver
-    def setUp(self):
+    def setup_method(self):
         self.totp = pyotp.TOTP("JHCOGO7VCER3EJ4L")
         self.username = "journalist"
         self.password = "correct horse battery staple profanity oil chewy"
@@ -180,7 +180,7 @@ class TestAPIProxy(TestShared):
     def test_download_submission(self):
         s = self.api.get_all_submissions()[0]
 
-        self.assertFalse(s.is_read)
+        assert not s.is_read
 
         # We need a temporary directory to download
         tmpdir = tempfile.mkdtemp()
@@ -195,7 +195,7 @@ class TestAPIProxy(TestShared):
         # is_read should still be False as of SecureDrop 1.6.0 or later.
 
         s = self.api.get_submission(s)
-        self.assertFalse(s.is_read)
+        assert not s.is_read
 
         # Let us remove the temporary directory
         shutil.rmtree(tmpdir)
@@ -203,7 +203,7 @@ class TestAPIProxy(TestShared):
     @dastollervey_datasaver
     def test_logout(self):
         r = self.api.logout()
-        self.assertTrue(r)
+        assert r
         if os.path.exists("login.txt"):
             os.unlink("login.txt")
         if os.path.exists("testtoken.json"):
