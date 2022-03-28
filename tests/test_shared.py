@@ -165,7 +165,6 @@ class TestShared:
         reply = replies[0]
 
         r = self.api.get_reply_from_source(s, reply.uuid)
-
         assert reply.filename == r.filename
         assert reply.size == r.size
         assert reply.reply_url == r.reply_url
@@ -185,7 +184,14 @@ class TestShared:
         reply = self.api.reply_source(s, data)
         assert isinstance(reply, Reply)
         assert reply.uuid
-        assert reply.filename
+        assert reply.source_uuid
+    
+    def create_reply(self):
+        s = self.api.get_sources()[0]
+        replies = self.api.get_replies_from_source(s)
+        reply = replies[0]
+        
+        r = Reply(reply.uuid, reply.filename)
 
     def reply_source_with_uuid(self):
         s = self.api.get_sources()[0]

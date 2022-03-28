@@ -116,7 +116,10 @@ class TestAPI(TestShared):
     @vcr.use_cassette("data/test-get-sources.yml")
     def test_get_sources(self):
         super().get_sources()
-
+    @vcr.use_cassette("data/test-create-reply.yml")
+    def test_create_reply(self):
+        super().create_reply()
+    
     @vcr.use_cassette("data/test-star-add-remove.yml")
     def test_star_add_remove(self):
         super().star_add_remove()
@@ -180,7 +183,7 @@ class TestAPI(TestShared):
     @vcr.use_cassette("data/test-get-all-replies.yml")
     def test_get_all_replies(self):
         super().get_all_replies()
-
+        
     # This test is materially different in the API & API Proxy versions.
     @vcr.use_cassette("data/test-download-reply.yml")
     def test_download_reply(self):

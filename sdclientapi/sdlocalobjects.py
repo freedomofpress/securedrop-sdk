@@ -70,11 +70,15 @@ class Reply:
         self.source_uuid = ""  # type: str
         self.uuid = ""  # type: str
 
-        if {"uuid", "filename"} == set(kwargs.keys()):
+        if {"uuid", "source_uuid"} == set(kwargs.keys()):
             # Then we are creating an object for fetching from the server.
             self.uuid = kwargs["uuid"]
-            self.filename = kwargs["filename"]
+            self.source_uuid = kwargs["source_uuid"]
             return
+        else:
+            # Now let us set source uuid
+            values = self.source_url.split("/")
+            self.source_uuid = values[-1]
 
         for key in [
             "filename",
@@ -93,9 +97,6 @@ class Reply:
                 AttributeError("Missing key {}".format(key))
             setattr(self, key, kwargs[key])
 
-        # Now let us set source uuid
-        values = self.source_url.split("/")
-        self.source_uuid = values[-1]
 
 
 class Submission:
@@ -113,9 +114,10 @@ class Submission:
         self.submission_url = ""  # type: str
         self.uuid = ""  # type: str
 
-        if ["uuid"] == list(kwargs.keys()):
+        if ["uuid", "source_uuid"] == list(kwargs.keys()):
             # Means we are creating an object only for fetching from server.
             self.uuid = kwargs["uuid"]
+            self.source_uuid = kwargs["source_uuid"]
             return
 
         for key in [

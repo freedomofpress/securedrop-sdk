@@ -1,0 +1,35 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Token eyJhbGciOiJIUzI1NiIsImlhdCI6MTYyMzk0MjczOCwiZXhwIjoxNjIzOTcxNTM4fQ.eyJpZCI6MX0.xNE1oOw5qVbJjX3qZB4dYJW1pnhWHu1pEJ6j7Xoy0do
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: http://127.0.0.1:8081/api/v1/sources
+  response:
+    body:
+      string: "{\n  \"error\": \"Forbidden\", \n  \"message\": \"API token is invalid
+        or expired.\"\n}\n"
+    headers:
+      Content-Length:
+      - '77'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 28 Mar 2022 03:59:15 GMT
+      Server:
+      - Werkzeug/2.0.2 Python/3.8.10
+    status:
+      code: 403
+      message: FORBIDDEN
+version: 1

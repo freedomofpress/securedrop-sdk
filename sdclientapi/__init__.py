@@ -714,12 +714,12 @@ class API:
             headers=self.req_headers,
             timeout=self.default_request_timeout,
         )
-
+        
         if "message" in data and data["message"] == "Your reply has been stored":
-            return Reply(uuid=data["uuid"], filename=data["filename"])
+            return Reply(uuid=data["uuid"], source_uuid =source.uuid)
 
         raise ReplyError("bad request")
-
+    
     def get_replies_from_source(self, source: Source) -> List[Reply]:
         """
         This will return a list of replies associated with a source.
@@ -807,7 +807,6 @@ class API:
         :returns: Tuple of etag and path of the saved Reply.
         """
         path_query = "api/v1/sources/{}/replies/{}/download".format(reply.source_uuid, reply.uuid)
-
         method = "GET"
 
         if path:
