@@ -185,7 +185,7 @@ class TestShared:
         assert isinstance(reply, Reply)
         assert reply.uuid
         assert reply.source_uuid
-    
+
     def reply_source_with_uuid(self):
         s = self.api.get_sources()[0]
         dirname = os.path.dirname(__file__)

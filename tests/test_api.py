@@ -180,7 +180,7 @@ class TestAPI(TestShared):
     @vcr.use_cassette("data/test-get-all-replies.yml")
     def test_get_all_replies(self):
         super().get_all_replies()
-        
+
     # This test is materially different in the API & API Proxy versions.
     @vcr.use_cassette("data/test-download-reply.yml")
     def test_download_reply(self):
