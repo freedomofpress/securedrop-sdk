@@ -75,10 +75,13 @@ class Reply:
             self.uuid = kwargs["uuid"]
             self.source_uuid = kwargs["source_uuid"]
             return
-        else:
+        elif {"uuid", "filename"} == set(kwargs.keys()):
+            self.uuid = kwargs["uuid"]
+            self.filename = kwargs["filename"]
             # Now let us set source uuid
             values = self.source_url.split("/")
             self.source_uuid = values[-1]
+            return
 
         for key in [
             "filename",
@@ -118,6 +121,10 @@ class Submission:
             # Means we are creating an object only for fetching from server.
             self.uuid = kwargs["uuid"]
             self.source_uuid = kwargs["source_uuid"]
+            return
+        elif["uuid"] == list(kwargs.keys()):
+            # Means we are creating an object only for fetching from server.
+            self.uuid = kwargs["uuid"]
             return
 
         for key in [

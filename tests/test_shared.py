@@ -184,7 +184,6 @@ class TestShared:
         reply = self.api.reply_source(s, data)
         assert isinstance(reply, Reply)
         assert reply.uuid
-        assert reply.source_uuid
 
     def reply_source_with_uuid(self):
         s = self.api.get_sources()[0]
