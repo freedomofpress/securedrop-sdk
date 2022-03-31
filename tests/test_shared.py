@@ -186,13 +186,6 @@ class TestShared:
         assert reply.uuid
         assert reply.source_uuid
     
-    def create_reply(self):
-        s = self.api.get_sources()[0]
-        replies = self.api.get_replies_from_source(s)
-        reply = replies[0]
-        
-        r = Reply(reply.uuid, reply.filename)
-
     def reply_source_with_uuid(self):
         s = self.api.get_sources()[0]
         dirname = os.path.dirname(__file__)

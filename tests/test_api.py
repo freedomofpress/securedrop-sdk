@@ -116,7 +116,7 @@ class TestAPI(TestShared):
     @vcr.use_cassette("data/test-get-sources.yml")
     def test_get_sources(self):
         super().get_sources()
-    
+
     @vcr.use_cassette("data/test-star-add-remove.yml")
     def test_star_add_remove(self):
         super().star_add_remove()
