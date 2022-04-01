@@ -78,9 +78,6 @@ class Reply:
         elif {"uuid", "filename"} == set(kwargs.keys()):
             self.uuid = kwargs["uuid"]
             self.filename = kwargs["filename"]
-            # Now let us set source uuid
-            values = self.source_url.split("/")
-            self.source_uuid = values[-1]
             return
 
         for key in [
@@ -99,6 +96,10 @@ class Reply:
             if key not in kwargs:
                 AttributeError("Missing key {}".format(key))
             setattr(self, key, kwargs[key])
+        
+            # Now let us set source uuid
+            values = self.source_url.split("/")
+            self.source_uuid = values[-1]
 
 
 
