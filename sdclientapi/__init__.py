@@ -714,9 +714,9 @@ class API:
             headers=self.req_headers,
             timeout=self.default_request_timeout,
         )
-    
+
         if "message" in data and data["message"] == "Your reply has been stored":
-            return Reply(uuid=data["uuid"], source_uuid =source.uuid)
+            return Reply(uuid=data["uuid"], source_uuid=source.uuid)
 
         raise ReplyError("bad request")
 

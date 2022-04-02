@@ -96,11 +96,10 @@ class Reply:
             if key not in kwargs:
                 AttributeError("Missing key {}".format(key))
             setattr(self, key, kwargs[key])
-        
+
             # Now let us set source uuid
             values = self.source_url.split("/")
             self.source_uuid = values[-1]
-
 
 
 class Submission:
@@ -123,7 +122,8 @@ class Submission:
             self.uuid = kwargs["uuid"]
             self.source_uuid = kwargs["source_uuid"]
             return
-        elif["uuid"] == list(kwargs.keys()):
+
+        elif ["uuid"] == list(kwargs.keys()):
             # Means we are creating an object only for fetching from server.
             self.uuid = kwargs["uuid"]
             return
