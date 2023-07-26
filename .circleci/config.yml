@@ -22,8 +22,9 @@ jobs:
     working_directory: ~/project
     machine:
       enabled: true
-      # TODO: why is this using Ubuntu instead of Debian?
-      image: ubuntu-2004:202010-01
+      # Because we are running Docker inside this job, we need a machine type.
+      # CircleCI does not currently offer Debian machine images.
+      image: ubuntu-2004:2023.07.1
     environment:
       DOCKER_API_VERSION: 1.23
     steps:
@@ -31,7 +32,6 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            (cd $(pyenv root); git pull)
             pyenv install 3.9
             pyenv global 3.9
             make venv
@@ -57,7 +57,7 @@ jobs:
           name: Wait for server to be up and for test sources to load
           command: |
             dockerize -wait tcp://127.0.0.1:8080 -timeout 30m
-            sleep 30
+            sleep 300
       - run:
           name: Remove VCR cassettes and run tests against latest API
           command: |
